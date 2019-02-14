@@ -1,9 +1,11 @@
 module Main where
 
-import Lib
-import Experiments
+import Runner
+import System.Random
 
 main :: IO ()
-main = do{
-    someFunc;
-}
+main = do
+    gen <- getStdGen
+    i <- selectProblem
+
+    i gen
