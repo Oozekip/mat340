@@ -54,6 +54,16 @@ pub fn run_polya() {
     println!("Distribution of results (intervals of 5%):\n {:?}", result);
 }
 
+pub fn run_random_walk() {
+    let dimensions = read_until_checked("Enter number of dimensions to walk", check_at_least(1));
+    let steps = read_until_checked("Enter number of steps to make", check_at_least(1));
+    let n = read_until_checked("Enter number of trials to run", check_at_least(1));
+
+    let average = random_walk(dimensions, steps, n);
+
+    println!("Average distance walked was {}", average);
+}
+
 pub fn gamblers_ruin(starting: usize, winning: usize, p: f64, n: u32) -> Vector {
     let mat = gamblers_matrix(winning, p);
     let mut cumulative = identity(winning + 1);
@@ -117,8 +127,24 @@ pub fn polya_urn(green: u32, orange: u32, additional: u32, n: u32) -> Vec<f64> {
         .collect()
 }
 
-pub fn random_walk(dimension: usize, steps: usize, n: usize) -> f32 {
-    unimplemented!()
+pub fn random_walk(dimension: usize, steps: usize, n: usize) -> f64 {
+    let mut average = 0.0;
+    let mut rng = rand::thread_rng();
+
+    for _ in 0..n {
+        let mut movement = dim_vector(dimension);
+
+        for _ in 0..steps {
+            let dir = ((rng.gen_range(0i8, 2i8) * 2) - 1) as f64;
+            let dim = rng.gen_range(0, dimension + 1);
+
+            movement[dim] += dir;
+        }
+
+        average += f64::sqrt(movement.iter().map(|x| x * x).sum());
+    }
+
+    return average / (n as f64);
 }
 
 fn identity(n: usize) -> Matrix {
@@ -126,7 +152,11 @@ fn identity(n: usize) -> Matrix {
 }
 
 fn dim_vector(n: usize) -> Vector {
-    unimplemented!()
+    let mut vector = Vector::identity(n + 1);
+
+    vector[0] = 0.0;
+
+    vector
 }
 
 fn gamblers_matrix(n: usize, p: f64) -> Matrix {

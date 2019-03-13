@@ -6,10 +6,11 @@ use std::io;
 
 type TrialPair = (&'static str, fn() -> ());
 
-const RUNS: [TrialPair; 3] = [
+const RUNS: [TrialPair; 4] = [
     ("Gamblers Ruin", run_gamblers),
     ("Absorption", run_absorption),
     ("Polya Urn", run_polya),
+    ("Random Walk", run_random_walk),
 ];
 
 fn main() -> io::Result<()> {
@@ -21,7 +22,7 @@ fn main() -> io::Result<()> {
         .join("\n");
 
     let prompt = format!("Choose an experiment:\n{}\n", enumerated);
-    let chosen = read_until_checked(prompt.as_str(), check_in_range(1, RUNS.len() + 1)) - 1;
+    let chosen = read_until_checked(prompt.as_str(), check_in_range(1, RUNS.len())) - 1;
 
     RUNS[chosen].1();
 

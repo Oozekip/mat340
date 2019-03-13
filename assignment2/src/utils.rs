@@ -2,10 +2,10 @@ use std::fmt::Display;
 use std::io::{self, stdout, Write};
 use std::str::FromStr;
 
-use nalgebra::{DMatrix, Dynamic, RowVector, VecStorage, U1};
+use nalgebra::{DMatrix, RowDVector};
 
 pub type Matrix = DMatrix<f64>;
-pub type Vector = RowVector<f64, Dynamic, VecStorage<f64, U1, Dynamic>>;
+pub type Vector = RowDVector<f64>;
 
 pub fn read_until<T: FromStr>(prompt: &str) -> T {
     read_until_checked(prompt, |_: &T| None)
