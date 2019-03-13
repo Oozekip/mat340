@@ -1,0 +1,17 @@
+[package]
+name = "assignment2"
+version = "0.1.0"
+authors = ["Philip <philip.n@digipen.edu>"]
+edition = "2018"
+
+[lib]
+name = "assignment"
+path = "src/lib.rs"
+
+[[bin]]
+name = "assignment2"
+path = "src/main.rs"
+
+[dependencies]
+nalgebra = "0.17.2"
+rand = "0.6.5"
