@@ -21,7 +21,6 @@ impl fmt::Display for Correlation {
         writeln!(f, "Mean (X, Y):               {:?}", self.mean)?;
         writeln!(f, "Standard deviation (X, Y): {:?}", self.deviation)?;
         writeln!(f, "Correlation:               {:?}", self.correlation)
-
     }
 }
 
@@ -50,43 +49,45 @@ pub fn run_confidence() {
 }
 
 pub fn run_correlation() {
-    let mut doc: Xlsx<_> = open_workbook("./Coding3_Data.xlsx").unwrap();
+    let mut doc: Xlsx<_> = open_workbook("./Coding3_Data.xlsx")
+        .expect("Unable to open file 'Coding3_Data.xlsx' for reading");
+    let r = doc
+        .worksheet_range("Sheet1")
+        .expect("No sheet titled 'Sheet1' in spreadsheet Coding3_Data.xlsx").unwrap();
 
-    if let Some(Ok(r)) = doc.worksheet_range("Sheet1") {
-        let mut midterm = Vec::new();
-        let mut homework = Vec::new();
-        let mut quiz = Vec::new();
-        let mut total = Vec::new();
+    let mut midterm = Vec::new();
+    let mut homework = Vec::new();
+    let mut quiz = Vec::new();
+    let mut total = Vec::new();
 
-        for row in r.rows().skip(1) {
-            midterm.push(row[0].get_float().unwrap() / 100.0);
-            homework.push(row[1].get_float().unwrap() / 100.0);
-            quiz.push(row[2].get_float().unwrap() / 100.0);
-            total.push(row[3].get_float().unwrap() / 100.0);
-        }
-
-        let mt: Vec<_> = midterm.iter().cloned().zip(total.iter().cloned()).collect();
-        let ht: Vec<_> = homework
-            .iter()
-            .cloned()
-            .zip(total.iter().cloned())
-            .collect();
-        let qt: Vec<_> = quiz.iter().cloned().zip(total.iter().cloned()).collect();
-
-        let mc = correlation_coefficient(&mt);
-        let hc = correlation_coefficient(&ht);
-        let qc = correlation_coefficient(&qt);
-
-        println!("Midterm (X), Final (Y)");
-        println!("{}", mc);
-        println!("");
-        println!("Homework (X), Final (Y)");
-        println!("{}", hc);
-        println!("");
-        println!("Quizes (X), Final (Y)");
-        println!("{}", qc);
-        println!("");
+    for row in r.rows().skip(1) {
+        midterm.push(row[0].get_float().unwrap() / 100.0);
+        homework.push(row[1].get_float().unwrap() / 100.0);
+        quiz.push(row[2].get_float().unwrap() / 100.0);
+        total.push(row[3].get_float().unwrap() / 100.0);
     }
+
+    let mt: Vec<_> = midterm.iter().cloned().zip(total.iter().cloned()).collect();
+    let ht: Vec<_> = homework
+        .iter()
+        .cloned()
+        .zip(total.iter().cloned())
+        .collect();
+    let qt: Vec<_> = quiz.iter().cloned().zip(total.iter().cloned()).collect();
+
+    let mc = correlation_coefficient(&mt);
+    let hc = correlation_coefficient(&ht);
+    let qc = correlation_coefficient(&qt);
+
+    println!("Midterm (X), Final (Y)");
+    println!("{}", mc);
+    println!("");
+    println!("Homework (X), Final (Y)");
+    println!("{}", hc);
+    println!("");
+    println!("Quizes (X), Final (Y)");
+    println!("{}", qc);
+    println!("");
 }
 
 pub fn estimate_pi(n: usize) -> f64 {
