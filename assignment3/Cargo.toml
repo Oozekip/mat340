@@ -14,3 +14,4 @@ path = "src/main.rs"
 
 [dependencies]
 rand = "0.6.5"
+calamine = "0.15.4"
