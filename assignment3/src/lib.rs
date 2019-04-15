@@ -35,7 +35,7 @@ pub fn run_estimate() {
 pub fn run_confidence() {
     let k = read_until_checked("Enter number of experiments per trial", check_at_least(1));
     let n = read_until_checked(
-        "Enter number of trials to run to generate",
+        "Enter number of trials to run",
         check_at_least(1),
     );
     let p = read_until_checked("Enter probability of success", check_probability);
@@ -61,10 +61,10 @@ pub fn run_correlation() {
     let mut total = Vec::new();
 
     for row in r.rows().skip(1) {
-        midterm.push(row[0].get_float().unwrap() / 100.0);
-        homework.push(row[1].get_float().unwrap() / 100.0);
-        quiz.push(row[2].get_float().unwrap() / 100.0);
-        total.push(row[3].get_float().unwrap() / 100.0);
+        midterm.push(row[0].get_float().unwrap());
+        homework.push(row[1].get_float().unwrap());
+        quiz.push(row[2].get_float().unwrap());
+        total.push(row[3].get_float().unwrap());
     }
 
     let mt: Vec<_> = midterm.iter().cloned().zip(total.iter().cloned()).collect();
@@ -127,7 +127,8 @@ pub fn confidence_interval(p: f64, k: usize, n: usize) -> usize {
             }
         }
 
-        let z = (wins as f64 - mean) / dev;
+        let prop = wins as f64 / kf;
+        let z = (wins as f64 - kf * prop) / (kf * prop * (1.0 - p)).sqrt();
 
         if z <= 1.96 {
             in_range += 1;
