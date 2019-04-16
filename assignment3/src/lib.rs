@@ -111,9 +111,6 @@ pub fn estimate_pi(n: usize) -> f64 {
 pub fn confidence_interval(p: f64, k: usize, n: usize) -> usize {
     let mut in_range = 0;
     let kf = k as f64;
-    let mean = kf * p;
-    let var = kf * p * (1f64 - p);
-    let dev = var.sqrt();
     let mut rng = rand::thread_rng();
 
     for _ in 0..n {
@@ -128,9 +125,12 @@ pub fn confidence_interval(p: f64, k: usize, n: usize) -> usize {
         }
 
         let prop = wins as f64 / kf;
-        let z = (wins as f64 - kf * prop) / (kf * prop * (1.0 - p)).sqrt();
+        let margin = 2.0 * (prop * (1.0 - prop) / kf).sqrt();
 
-        if z <= 1.96 {
+        let left = prop - margin;
+        let right = prop + margin;
+
+        if left <= p && p <= right {
             in_range += 1;
         }
     }
